@@ -1,1 +1,72 @@
-<h1>Настройки</h1>
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white py-3">
+                    <h4 class="mb-0">Настройки системы</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-5">
+                            <h5 class="text-dark border-bottom pb-2">Личные данные</h5>
+                            {% bootstrap_form user_form %}
+                        </div>
+
+                        <div class="mb-5">
+                            <h5 class="text-dark border-bottom pb-2">Параметры планирования</h5>
+                            <p class="text-muted small mb-4">Эти данные используются алгоритмом для генерации адаптивных рекомендаций на основе внешних факторов.</p>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label d-block fw-bold mb-2">Медицинские факторы (аллергии)</label>
+                                    <div class="p-3 border rounded bg-light">
+                                        {% bootstrap_field profile_form.has_pollen_allergy %}
+                                        {% bootstrap_field profile_form.has_dust_allergy %}
+                                        {% bootstrap_field profile_form.has_sun_allergy %}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label d-block fw-bold mb-2">Внешние воздействия</label>
+                                    <div class="mb-3">
+                                        {% bootstrap_field profile_form.magnetic_sensitivity %}
+                                    </div>
+                                    <div class="mb-3">
+                                        {% bootstrap_field profile_form.preferred_notification_time %}
+                                        <div class="form-text">Время, когда система пришлет план на день.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">
+                                Назад в профиль
+                            </a>
+                            {% bootstrap_button "Сохранить изменения" button_type="submit" button_class="btn-dark" %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card border-danger mt-4">
+                <div class="card-body d-flex justify-content-between align-items-center text-danger">
+                    <div>
+                        <h6 class="mb-0 fw-bold">Удаление аккаунта</h6>
+                        <p class="small mb-0 opacity-75">Все ваши задачи и рекомендации будут стерты безвозвратно.</p>
+                    </div>
+                    <button class="btn btn-outline-danger btn-sm">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
