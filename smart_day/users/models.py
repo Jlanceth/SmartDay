@@ -15,6 +15,13 @@ class UserProfile(models.Model):
         on_delete=models.CASCADE,
         related_name='profile'
     )
+    
+    avatar = models.ImageField(
+        upload_to='avatars/', 
+        null=True, 
+        blank=True, 
+        verbose_name='Аватар'
+    )
 
     has_pollen_allergy = models.BooleanField(
         default=False,

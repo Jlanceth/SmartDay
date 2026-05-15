@@ -2,42 +2,64 @@
 {% load django_bootstrap5 %}
 
 {% block content %}
+<div class="container py-5">
+    <div class="row justify-content-start pt-2">
+        <div class="col-md-5">
+            <div class="card shadow-sm rounded-4">
+                <div class="card-header bg-primary text-white py-3 rounded-top-4">
+                    <h4 class="mb-0">Авторизация</h4>
+                </div>
 
-<div class="row justify-content-start pt-2">
+                <div class="card-body p-4">
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger shadow-sm border-0">
+                            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
 
-    <div class="col-md-5">
-
-        <div class="card shadow-sm">
-
-            <div class="card-header">
-                Авторизация
-            </div>
-
-            <div class="card-body">
-                {% if form.non_field_errors %}
-                    <div class="alert alert-danger">
-                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
-                    </div>
-                {% endif %}
-
-                <form method="post">
-                    {% csrf_token %}
-                    {% bootstrap_form form %}
-                    
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        {% bootstrap_button "Войти" button_type="submit" button_class="btn-primary" %}
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% bootstrap_form form alert_error_type='none' %}
                         
-                        <a href="{% url 'users:register' %}" class="btn btn-outline-primary">
-                            Регистрация
-                        </a>
-                    </div>
-                </form>
+                        <div class="mb-3 text-end">
+                            <a href="{% url 'users:password_reset' %}" class="text-decoration-none small text-muted">
+                                Забыли пароль?
+                            </a>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            {% bootstrap_button "Войти" button_type="submit" button_class="btn-primary px-4" %}
+                            
+                            <a href="{% url 'users:register' %}" class="btn btn-outline-primary px-4">
+                                Регистрация
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
-
         </div>
-
     </div>
-
 </div>
 
+<style>
+    /* Ваши существующие стили */
+    .was-validated .form-control:valid, .form-control.is-valid,
+    .was-validated .form-control:invalid, .form-control.is-invalid {
+        background-image: none !important;
+        padding-right: 0.75rem !important;
+    }
+
+    .form-control.is-valid {
+        border-color: #dee2e6 !important;
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    /* Дополнительный стиль для ссылки, чтобы она была аккуратной */
+    .text-muted:hover {
+        color: #0d6efd !important; /* Цвет основной темы при наведении */
+    }
+</style>
 {% endblock %}

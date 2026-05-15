@@ -4,22 +4,22 @@
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-start pt-2">
-        <div class="col-12 col-md-10 col-lg-7 col-xl-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white py-3">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow rounded-4">
+                <div class="card-header bg-primary text-white py-3 rounded-top-4">
                     <h4 class="mb-0">Профиль пользователя</h4>
                 </div>
                 <div class="card-body p-4">
-                    <div class="d-flex align-items-center mb-4">
-                        <div class="ms-4">
-                            <h3 class="mb-1 text-outline-dark">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <h3 class="mb-1 text-primary fw-bold">
                                 {% if request.user.get_full_name %}
                                     {{ request.user.get_full_name }}
                                 {% else %}
                                     {{ request.user.username }}
                                 {% endif %}
                             </h3>
-                            <p class="text-muted mb-0">
+                            <p class="text-muted mb-1">
                                 <i class="bi bi-envelope"></i> {{ request.user.email|default:"Email не указан" }}
                             </p>
                             <p class="small text-secondary mb-0">
@@ -27,13 +27,22 @@
                                 <strong>{{ request.user.profile.preferred_notification_time|time:"H:i"|default:"не настроено" }}</strong>
                             </p>
                         </div>
+
+                        <div class="text-end">
+                        {% if request.user.profile.avatar %}
+                            <img src="{{ request.user.profile.avatar.url }}" alt="Avatar" class="rounded-circle border shadow-sm" style="width: 100px; height: 100px; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center border shadow-sm" style="width: 100px; height: 100px;">
+                                <i class="bi bi-person text-secondary" style="font-size: 3rem;"></i>
+                            </div>
+                        {% endif %}
+                        </div>
                     </div>
 
-                    <hr>
+                    <hr class="my-4">
 
                     <div class="mb-4">
                         <h6 class="text-uppercase text-muted small fw-bold mb-3">Факторы влияния</h6>
-                        
                         <div class="row g-3">
                             <div class="col-12">
                                 <div class="p-3 border rounded bg-light">
@@ -43,21 +52,13 @@
                                     </span>
                                 </div>
                             </div>
-
                             <div class="col-12">
                                 <div class="p-3 border rounded bg-light">
                                     <span class="text-muted small d-block mb-2">Активные аллергии:</span>
                                     <div class="d-flex flex-wrap gap-2">
-                                        {% if request.user.profile.has_pollen_allergy %}
-                                            <span class="badge bg-primary">Пыльца</span>
-                                        {% endif %}
-                                        {% if request.user.profile.has_dust_allergy %}
-                                            <span class="badge bg-primary">Пыль</span>
-                                        {% endif %}
-                                        {% if request.user.profile.has_sun_allergy %}
-                                            <span class="badge bg-primary">УФ-излучение</span>
-                                        {% endif %}
-                                        
+                                        {% if request.user.profile.has_pollen_allergy %}<span class="badge bg-primary">Пыльца</span>{% endif %}
+                                        {% if request.user.profile.has_dust_allergy %}<span class="badge bg-primary">Пыль</span>{% endif %}
+                                        {% if request.user.profile.has_sun_allergy %}<span class="badge bg-primary">УФ-излучение</span>{% endif %}
                                         {% if not request.user.profile.has_pollen_allergy and not request.user.profile.has_dust_allergy and not request.user.profile.has_sun_allergy %}
                                             <span class="text-muted italic small">Не указаны</span>
                                         {% endif %}
@@ -67,16 +68,14 @@
                         </div>
                     </div>
 
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                        {% if request.user.is_authenticated %}
-                            <a href="{% url 'users:settings' %}" class="btn btn-primary me-md-2">
-                                <i class="bi bi-gear"></i> Настройки
-                            </a>
-                            <form action="{% url 'users:logout' %}" method="post" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger">Выйти</button>
-                            </form>
-                        {% endif %}
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a href="{% url 'users:settings' %}" class="btn btn-primary px-4">
+                            <i class="bi bi-gear"></i> Настройки
+                        </a>
+                        <form action="{% url 'users:logout' %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger px-4">Выйти</button>
+                        </form>
                     </div>
                 </div>
             </div>

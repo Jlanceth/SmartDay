@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import UserProfile
+from django.contrib.auth.forms import AuthenticationForm
 
 # 1. Форма регистрации
 class UserRegisterForm(UserCreationForm):
@@ -25,6 +26,7 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = [
+            'avatar',
             'has_pollen_allergy', 
             'has_dust_allergy', 
             'has_sun_allergy', 
@@ -36,3 +38,9 @@ class UserProfileForm(forms.ModelForm):
             'magnetic_sensitivity': forms.Select(attrs={'class': 'form-select'}),
         }
 
+
+class EmailAuthenticationForm(AuthenticationForm):
+    username = forms.CharField(
+        label="Email или имя пользователя",
+        widget=forms.TextInput(attrs={'autofocus': True, 'class': 'form-control'})
+    )

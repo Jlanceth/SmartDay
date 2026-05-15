@@ -119,12 +119,21 @@
                 <span class="me-2 fw-bold small text-dark">
                     {{ request.user.get_full_name|default:request.user.username }}
                 </span>
-                <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center shadow-sm" 
-                    style="width: 35px; height: 35px; transition: transform 0.2s;"
-                    onmouseover="this.style.transform='scale(1.1)'" 
-                    onmouseout="this.style.transform='scale(1)'">
-                    {{ request.user.username|slice:":1"|upper }}
-                </div>
+                
+                {% if request.user.profile.avatar %}
+                    <img src="{{ request.user.profile.avatar.url }}" 
+                        class="rounded-circle shadow-sm" 
+                        style="width: 35px; height: 35px; object-fit: cover; transition: transform 0.2s;"
+                        onmouseover="this.style.transform='scale(1.1)'" 
+                        onmouseout="this.style.transform='scale(1)'">
+                {% else %}
+                    <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center shadow-sm" 
+                        style="width: 35px; height: 35px; transition: transform 0.2s;"
+                        onmouseover="this.style.transform='scale(1.1)'" 
+                        onmouseout="this.style.transform='scale(1)'">
+                        {{ request.user.username|slice:":1"|upper }}
+                    </div>
+                {% endif %}
             </a>
         </header>
 

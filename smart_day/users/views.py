@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
-from .forms import UserUpdateForm, UserProfileForm, UserRegisterForm
+from .forms import UserUpdateForm, UserProfileForm, UserRegisterForm, EmailAuthenticationForm
 from .models import UserProfile
 
 def register_view(request):
@@ -24,13 +24,14 @@ def register_view(request):
 
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = EmailAuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
             return redirect('/')
     else:
-        form = AuthenticationForm()
+        form = EmailAuthenticationForm()
+    
     return render(
         request,
         'users/login.html',
@@ -59,12 +60,12 @@ class UserPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
 
 @login_required
 def settings_view(request):
-    # Получаем профиль пользователя (создаем, если его еще нет)
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=request.user)
-        profile_form = UserProfileForm(request.POST, instance=profile)
+        # Обязательно добавляем request.FILES для обработки аватара
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
         
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
@@ -78,3 +79,4 @@ def settings_view(request):
         'user_form': user_form,
         'profile_form': profile_form
     })
+

@@ -10,13 +10,38 @@
                     <h4 class="mb-0">Настройки системы</h4>
                 </div>
                 <div class="card-body p-4">
-                    <form method="post">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 
-                        <div class="mb-5">
-                            <h5 class="text-primary border-bottom pb-2">Личные данные</h5>
-                            {% bootstrap_form user_form %}
+                    <div class="mb-5">
+                        <h5 class="text-primary border-bottom pb-2">Личные данные</h5>
+                        
+                    <div class="row align-items-center mb-4">
+                        <div class="col-auto">
+                            {% if request.user.profile.avatar %}
+                                <img src="{{ request.user.profile.avatar.url }}" class="rounded-circle border" style="width: 80px; height: 80px; object-fit: cover;">
+                            {% else %}
+                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center border" style="width: 80px; height: 80px;">
+                                    <i class="bi bi-person text-secondary" style="font-size: 2rem;"></i>
+                                </div>
+                            {% endif %}
                         </div>
+                        <div class="col">
+                            <label for="{{ profile_form.avatar.id_for_label }}" class="form-label d-none">Аватар</label>
+                            <input type="file" name="{{ profile_form.avatar.name }}" 
+                                class="form-control form-control-sm" 
+                                id="{{ profile_form.avatar.id_for_label }}" 
+                                accept="image/*">
+                            <div class="form-text small">Рекомендуется квадратное изображение (JPG, PNG).</div>
+                            
+                            {% if profile_form.avatar.errors %}
+                                <div class="text-danger small">{{ profile_form.avatar.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                        {% bootstrap_form user_form %}
+                    </div>
 
                         <div class="mb-5">
                             <h5 class="text-primary border-bottom pb-2">Параметры планирования</h5>

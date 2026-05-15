@@ -2,23 +2,49 @@
 {% load django_bootstrap5 %}
 
 {% block content %}
-<div class="row justify-content-start pt-2">
-    <div class="col-md-5">
-        <div class="card shadow-sm">
-            <div class="card-header">
-                Регистрация пользователя
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    {% bootstrap_form form %}
+<div class="container py-5">
+    <div class="row justify-content-start pt-2">
+        <div class="col-md-6"> 
+            <div class="card shadow-sm rounded-4">
+                <div class="card-header bg-primary text-white py-3 rounded-top-4">
+                    <h4 class="mb-0">Регистрация пользователя</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger shadow-sm border-0 mb-4">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        {% bootstrap_button "Зарегистрироваться" button_type="submit" button_class="btn-outline-primary" %}
-                    </div>
-                </form>
+                        {% bootstrap_form form alert_error_type='none' %}
+
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            {% bootstrap_button "Зарегистрироваться" button_type="submit" button_class="btn-primary px-4" %}
+                            <a href="{% url 'users:login' %}" class="btn btn-link">Уже есть аккаунт?</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{# CSS для скрытия галочек валидации и приведения рамок в порядок #}
+<style>
+    /* Убираем иконки успеха (галочки) и ошибки (восклицательные знаки) внутри полей */
+    .form-control.is-valid, .was-validated .form-control:valid,
+    .form-control.is-invalid, .was-validated .form-control:invalid {
+        background-image: none !important;
+        padding-right: 0.75rem !important;
+    }
+    /* Возвращаем нейтральный цвет рамки для валидных полей, чтобы они не были зелеными */
+    .form-control.is-valid {
+        border-color: #dee2e6 !important;
+    }
+    
+</style>
 {% endblock %}
