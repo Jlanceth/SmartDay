@@ -34,4 +34,9 @@ urlpatterns = [
         views.settings_view,
         name='settings'
     ),
+    path(
+        'password-change/',
+        views.UserPasswordChangeView.as_view(),
+        name='password_change'
+    ),
 ]
