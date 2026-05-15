@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div class="row justify-content-center">
+<div class="row justify-content-start pt-2">
 
     <div class="col-md-5">
 
@@ -27,7 +27,7 @@
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         {% bootstrap_button "Войти" button_type="submit" button_class="btn-primary" %}
                         
-                        <a href="{% url 'users:register' %}" class="btn btn-outline-secondary">
+                        <a href="{% url 'users:register' %}" class="btn btn-outline-primary">
                             Регистрация
                         </a>
                     </div>

@@ -2,7 +2,7 @@
 {% load django_bootstrap5 %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-start pt-2">
     <div class="col-md-5">
         <div class="card shadow-sm">
             <div class="card-header">
@@ -14,7 +14,7 @@
                     {% bootstrap_form form %}
 
                     <div class="d-flex justify-content-between align-items-center mt-3">
-                        {% bootstrap_button "Зарегистрироваться" button_type="submit" button_class="btn-outline-dark" %}
+                        {% bootstrap_button "Зарегистрироваться" button_type="submit" button_class="btn-outline-primary" %}
                     </div>
                 </form>
             </div>

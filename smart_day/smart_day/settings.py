@@ -113,6 +113,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = 'users:login'       # Перенаправлять сюда, если нужен логин
+LOGIN_REDIRECT_URL = 'recommendations:index'  # Куда после входа
+LOGOUT_REDIRECT_URL = 'users:login'  # Куда после выхода
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

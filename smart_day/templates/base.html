@@ -1,87 +1,138 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>
-        Smart Day
-    </title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Day</title>
+    
     {% load django_bootstrap5 %}
-
     {% bootstrap_css %}
     {% bootstrap_javascript %}
-
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            background-color: #f8f9fa;
+        }
+        #sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background-color: #fff;
+            border-right: 1px solid #e0e0e0;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+        }
+        .nav-link {
+            color: #6c757d;
+            padding: 12px 20px;
+            font-weight: 500;
+            border-radius: 10px;
+            margin: 4px 15px;
+            display: flex;
+            align-items: center;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: #f0f4ff;
+            color: #0d6efd;
+        }
+        .nav-link i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+        .main-content {
+            margin-left: 250px; /* Отступ на ширину сайдбара */
+            width: 100%;
+        }
+        .logo-area {
+            padding: 25px 20px;
+            font-weight: bold;
+            font-size: 1.4rem;
+            color: #0d6efd;
+            display: flex;
+            align-items: center;
+        }
+        .logo-area i { margin-right: 10px; }
+        
+        /* Стили для мобильной версии, если нужно */
+        @media (max-width: 768px) {
+            #sidebar { width: 70px; }
+            #sidebar span, .logo-area span { display: none; }
+            .main-content { margin-left: 70px; }
+        }
+    </style>
 </head>
+<body>
 
-<body class="bg-light">
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-
-    <div class="container">
-
-        <a class="navbar-brand" href="/">
-            Smart Day
-        </a>
-
-        <div class="d-flex align-items-center">
-
-            {% if request.user.is_authenticated %}
-
-                <span class="navbar-text me-3">
-                    {{ request.user.username }}
-                </span>
-
-                <a
-                    href="{% url 'users:profile' %}"
-                    class="nav-link me-3 text-white"
-                >
-                    Профиль
-                </a>
-
-                <a
-                    href="{% url 'users:logout' %}"
-                    class="nav-link text-white"
-                >
-                    Выход
-                </a>
-
-            {% else %}
-
-                <a
-                    href="{% url 'users:login' %}"
-                    class="nav-link me-3 text-white"
-                >
-                    Вход
-                </a>
-
-                <a
-                    href="{% url 'users:register' %}"
-                    class="nav-link text-white"
-                >
-                    Регистрация
-                </a>
-
-            {% endif %}
-
+    <div id="sidebar shadow-sm">
+        <div class="logo-area">
+            <i class="bi bi-calendar-check-fill"></i>
+            <span>SmartDay</span>
         </div>
+        
+        <nav class="nav flex-column mb-auto">
+            <a href="{% url 'recommendations:index' %}" class="nav-link {% if request.resolver_match.view_name == 'recommendations:index' %}active{% endif %}">
+                <i class="bi bi-house-door"></i> <span>Главная</span>
+            </a>
 
+            <a href="{% url 'weather:current' %}" class="nav-link {% if 'weather' in request.path %}active{% endif %}">
+                <i class="bi bi-cloud-sun"></i> <span>Погода</span>
+            </a>
+
+            <a href="{% url 'tasks_calendar:list' %}" class="nav-link {% if 'tasks' in request.path %}active{% endif %}">
+                <i class="bi bi-calendar3"></i> <span>Календарь</span>
+            </a>
+
+            <a href="{% url 'users:profile' %}" class="nav-link {% if 'profile' in request.path %}active{% endif %}">
+                <i class="bi bi-person"></i> <span>Профиль</span>
+            </a>
+        </nav>
+
+        <hr class="mx-3">
+        
+        <div class="pb-4">
+            {% if request.user.is_authenticated %}
+                <form action="{% url 'users:logout' %}" method="post" class="px-3">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-light w-100 text-start text-danger nav-link border-0">
+                        <i class="bi bi-box-arrow-left"></i> <span>Выход</span>
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'users:login' %}" class="nav-link text-primary">
+                    <i class="bi bi-box-arrow-in-right"></i> <span>Вход</span>
+                </a>
+            {% endif %}
+        </div>
     </div>
 
-</nav>
+    <main class="main-content">
+        <header class="bg-white border-bottom p-3 d-flex justify-content-end align-items-center shadow-sm">
+            <div class="me-3">
+                <i class="bi bi-bell fs-5 text-muted" style="cursor: pointer;"></i>
+            </div>
+            
+            <a href="{% url 'users:profile' %}" class="d-flex align-items-center text-decoration-none">
+                <span class="me-2 fw-bold small text-dark">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </span>
+                <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center shadow-sm" 
+                    style="width: 35px; height: 35px; transition: transform 0.2s;"
+                    onmouseover="this.style.transform='scale(1.1)'" 
+                    onmouseout="this.style.transform='scale(1)'">
+                    {{ request.user.username|slice:":1"|upper }}
+                </div>
+            </a>
+        </header>
 
-
-<div class="container mt-4">
-
-    {% block content %}
-    {% endblock %}
-
-</div>
+        <div class="container-fluid p-4">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
 
 </body>
 </html>

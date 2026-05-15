@@ -3,16 +3,16 @@
 
 {% block content %}
 <div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
+    <div class="row justify-content-start pt-2">
+        <div class="col-12 col-md-10 col-lg-7 col-xl-6">
             <div class="card shadow">
-                <div class="card-header bg-dark text-white py-3">
+                <div class="card-header bg-primary text-white py-3">
                     <h4 class="mb-0">Профиль пользователя</h4>
                 </div>
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-4">
                         <div class="ms-4">
-                            <h3 class="mb-1 text-dark">
+                            <h3 class="mb-1 text-outline-dark">
                                 {% if request.user.get_full_name %}
                                     {{ request.user.get_full_name }}
                                 {% else %}
@@ -37,8 +37,8 @@
                         <div class="row g-3">
                             <div class="col-12">
                                 <div class="p-3 border rounded bg-light">
-                                    <span class="text-muted small d-block">Магнитные бури:</span>
-                                    <span class="fw-bold text-dark">
+                                    <span class="text-muted small d-block mb-2">Магнитные бури:</span>
+                                    <span class="badge bg-primary">
                                         {{ request.user.profile.get_magnetic_sensitivity_display }}
                                     </span>
                                 </div>
@@ -49,13 +49,13 @@
                                     <span class="text-muted small d-block mb-2">Активные аллергии:</span>
                                     <div class="d-flex flex-wrap gap-2">
                                         {% if request.user.profile.has_pollen_allergy %}
-                                            <span class="badge bg-dark">Пыльца</span>
+                                            <span class="badge bg-primary">Пыльца</span>
                                         {% endif %}
                                         {% if request.user.profile.has_dust_allergy %}
-                                            <span class="badge bg-dark">Пыль</span>
+                                            <span class="badge bg-primary">Пыль</span>
                                         {% endif %}
                                         {% if request.user.profile.has_sun_allergy %}
-                                            <span class="badge bg-dark">УФ-излучение</span>
+                                            <span class="badge bg-primary">УФ-излучение</span>
                                         {% endif %}
                                         
                                         {% if not request.user.profile.has_pollen_allergy and not request.user.profile.has_dust_allergy and not request.user.profile.has_sun_allergy %}
@@ -69,7 +69,7 @@
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                         {% if request.user.is_authenticated %}
-                            <a href="{% url 'users:settings' %}" class="btn btn-outline-dark me-md-2">
+                            <a href="{% url 'users:settings' %}" class="btn btn-primary me-md-2">
                                 <i class="bi bi-gear"></i> Настройки
                             </a>
                             <form action="{% url 'users:logout' %}" method="post" class="d-inline">
