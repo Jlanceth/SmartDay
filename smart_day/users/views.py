@@ -11,13 +11,14 @@ from .models import UserProfile
 
 def register_view(request):
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST) # Используем новую форму
+        form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('users:profile')
     else:
         form = UserRegisterForm()
+    
     return render(request, 'users/register.html', {'form': form})
 
 

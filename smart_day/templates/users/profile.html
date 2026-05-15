@@ -19,16 +19,58 @@
                                     {{ request.user.username }}
                                 {% endif %}
                             </h3>
-                            <p class="text-muted mb-0">{{ request.user.email|default:"Email не указан" }}</p>
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-envelope"></i> {{ request.user.email|default:"Email не указан" }}
+                            </p>
+                            <p class="small text-secondary mb-0">
+                                <i class="bi bi-bell"></i> Уведомления: 
+                                <strong>{{ request.user.profile.preferred_notification_time|time:"H:i"|default:"не настроено" }}</strong>
+                            </p>
                         </div>
                     </div>
 
                     <hr>
 
+                    <div class="mb-4">
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3">Факторы влияния</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="p-3 border rounded bg-light">
+                                    <span class="text-muted small d-block">Магнитные бури:</span>
+                                    <span class="fw-bold text-dark">
+                                        {{ request.user.profile.get_magnetic_sensitivity_display }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="p-3 border rounded bg-light">
+                                    <span class="text-muted small d-block mb-2">Активные аллергии:</span>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {% if request.user.profile.has_pollen_allergy %}
+                                            <span class="badge bg-dark">Пыльца</span>
+                                        {% endif %}
+                                        {% if request.user.profile.has_dust_allergy %}
+                                            <span class="badge bg-dark">Пыль</span>
+                                        {% endif %}
+                                        {% if request.user.profile.has_sun_allergy %}
+                                            <span class="badge bg-dark">УФ-излучение</span>
+                                        {% endif %}
+                                        
+                                        {% if not request.user.profile.has_pollen_allergy and not request.user.profile.has_dust_allergy and not request.user.profile.has_sun_allergy %}
+                                            <span class="text-muted italic small">Не указаны</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                         {% if request.user.is_authenticated %}
                             <a href="{% url 'users:settings' %}" class="btn btn-outline-dark me-md-2">
-                                Настройки
+                                <i class="bi bi-gear"></i> Настройки
                             </a>
                             <form action="{% url 'users:logout' %}" method="post" class="d-inline">
                                 {% csrf_token %}
