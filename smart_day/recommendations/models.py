@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from tasks_calendar.models import Event
+from tasks_calendar.models import Tasks
 
 
 class Recommendation(models.Model):
@@ -11,8 +11,8 @@ class Recommendation(models.Model):
         related_name='recommendations'
     )
 
-    event = models.ForeignKey(
-        Event,
+    task = models.ForeignKey(
+        Tasks,
         on_delete=models.CASCADE,
         null=True,
         blank=True

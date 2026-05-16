@@ -1,10 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-
 
 def current_weather_view(request):
-    return HttpResponse("Current weather page")
-
+    # Пример запроса
+    # response = requests.get('URL_API_ПОГОДЫ').json()
+    context = {
+        'temp': 18, # Данные из ответа API
+        'city': 'Пермь'
+    }
+    return render(request, 'weather/current.html', context)
 
 def weather_forecast_view(request):
-    return HttpResponse("Weather forecast page")
+    return render(request, 'weather/forecast.html')

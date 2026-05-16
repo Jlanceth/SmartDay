@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Мой календарь</h2>
+        <a href="{% url 'tasks_calendar:create' %}" class="btn btn-primary rounded-pill px-4">
+            <i class="bi bi-plus-lg me-2"></i>Добавить задачу
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">Задачи на сегодня</h5>
+                </div>
+                <div class="card-body">
+                    {% if tasks %}
+                        {% for task in tasks %}
+                            <div class="d-flex align-items-start border-bottom pb-3 mb-3">
+                                <div class="bg-primary text-white rounded-3 p-2 text-center me-3" style="min-width: 60px;">
+                                    <div class="small opacity-75">{{ task.start_time|date:"H:i" }}</div>
+                                    <div class="fw-bold text-uppercase">{{ task.start_time|date:"D" }}</div>
+                                </div>
+
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">
+                                        <a href="{% url 'tasks_calendar:detail' task.id %}" class="text-decoration-none text-dark">
+                                            {{ task.title }}
+                                        </a>
+                                    </h6>
+                                    <p class="text-muted small mb-0">{{ task.description|truncatechars:50 }}</p>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <a href="{% url 'tasks_calendar:edit' task.id %}" class="btn btn-sm btn-outline-primary border-0">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'tasks_calendar:delete' task.id %}" class="btn btn-sm btn-outline-danger border-0">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                    <div class="form-check ms-2">
+                                        <input class="form-check-input" type="checkbox" style="transform: scale(1.2);">
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-clipboard-x display-4"></i>
+                            <p class="mt-2">Задач пока нет. Самое время что-нибудь запланировать!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 bg-light">
+                <div class="card-body p-4">
+                    <h5 class="text-primary"><i class="bi bi-magic me-2"></i>Smart Recommendation</h5>
+                    <p class="small text-muted">На основе погоды и твоего самочувствия:</p>
+                    <div class="p-3 bg-white rounded-3 border-start border-primary border-4">
+                        "Сегодня высокая солнечная активность. Если пойдешь гулять, возьми очки и планируй дела в тени."
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

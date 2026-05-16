@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-start pt-2">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm rounded-4 border border-primary-subtle" style="border-width: 2px !important;">
+                <div class="card-header bg-primary text-white py-3 rounded-top-4">
+                    <h4 class="mb-0">
+                        {% if edit_mode %}
+                            <i class="bi bi-pencil-square me-2"></i>Редактирование задачи
+                        {% else %}
+                            <i class="bi bi-plus-circle me-2"></i>Новая задача
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {% bootstrap_field form.title %}
+                        {% bootstrap_field form.description %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% bootstrap_field form.task_type %}
+                            </div>
+                            <div class="col-md-6 d-flex align-items-center pt-3">
+                                {% bootstrap_field form.is_outdoor %}
+                            </div>
+                        </div>
+                        
+                        {% bootstrap_field form.location %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% bootstrap_field form.start_time %}
+                            </div>
+                            <div class="col-md-6">
+                                {% bootstrap_field form.end_time %}
+                            </div>
+                        </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <a href="{% url 'tasks_calendar:list' %}" class="btn btn-outline-secondary px-4">
+                            Отмена
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            {% if edit_mode %}Сохранить изменения{% else %}Создать задачу{% endif %}
+                        </button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="alert alert-light border-0 shadow-sm mt-4 small text-muted">
+                <i class="bi bi-info-circle me-2"></i>
+                Отметьте <strong>"На свежем воздухе"</strong>, если задача предполагает нахождение вне помещения. 
+                Система проанализирует погоду и даст рекомендацию.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

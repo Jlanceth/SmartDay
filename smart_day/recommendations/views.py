@@ -1,20 +1,21 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from datetime import date
-# Импортируй свои модели задач
+from tasks_calendar.models import Tasks
+
 
 @login_required
 def index_view(request):
-    # Здесь будет логика получения задач из базы
-    tasks = [
-        {'time': '09:00', 'title': 'Утренняя зарядка', 'category': 'Здоровье', 'duration': '30 мин', 'done': True},
-        {'time': '10:00', 'title': 'Учеба', 'category': 'Университет', 'duration': '2 ч', 'done': False},
-        # В реальном проекте это будет Task.objects.filter(user=request.user)
-    ]
+    today_date = date.today()
+    
+    tasks_list = Tasks.objects.filter(
+        user=request.user,
+        start_time__date=today_date
+    ).order_by('start_time')
     
     context = {
-        'today': date.today(),
-        'tasks': tasks,
-        'weather': {'temp': 22, 'condition': 'Солнечно', 'city': 'Пермь'}, # Пример данных
+        'today': today_date,
+        'tasks': tasks_list,
+        'weather': {'temp': 22, 'condition': 'Солнечно', 'city': 'Пермь'},
     }
     return render(request, 'main/index.html', context)

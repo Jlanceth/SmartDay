@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Рамка для карточки деталей */
+    .custom-detail-border {
+        border: 2px solid #dee2e6 !important;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05) !important;
+    }
+    
+    /* Стили для светлого блока активности */
+    .activity-box-light {
+        background-color: #f8f9fa;
+        border: 1px dashed #dee2e6;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-start pt-2">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm rounded-4 custom-detail-border">
+                <div class="card-body p-5">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <h2 class="fw-bold text-dark mb-0">{{ task.title }}</h2>
+                        <span class="badge bg-primary px-3 py-2 rounded-pill">{{ task.get_task_type_display }}</span>
+                    </div>
+                    
+                    <p class="lead text-muted">{{ task.description }}</p>
+                    
+                    <hr class="my-4" style="opacity: 0.1;">
+                    
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <p class="mb-1 text-muted small fw-semibold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Время проведения</p>
+                            <p class="fw-bold mb-0">
+                                <i class="bi bi-clock me-2 text-primary"></i> 
+                                {{ task.start_time|date:"d.m.Y H:i" }} — {{ task.end_time|date:"H:i" }}
+                            </p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="mb-1 text-muted small fw-semibold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Локация</p>
+                            <p class="fw-bold mb-0">
+                                <i class="bi bi-geo-alt me-2 text-primary"></i> 
+                                {{ task.location|default:"Не указана" }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-3 rounded-3 activity-box-light">
+                        <div class="d-flex align-items-center">
+                            {% if task.is_outdoor %}
+                                <i class="bi bi-check-square-fill text-primary me-2"></i>
+                                <span class="text-dark small">Активность на свежем воздухе</span>
+                            {% else %}
+                                <i class="bi bi-square text-muted me-2"></i>
+                                <span class="text-muted small">Активность на свежем воздухе</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mt-5 d-flex justify-content-between align-items-center">
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'tasks_calendar:edit' task.id %}" class="btn btn-primary px-4 rounded-pill">
+                                <i class="bi bi-pencil me-2"></i>Редактировать
+                            </a>
+                            <a href="{% url 'tasks_calendar:list' %}" class="btn btn-light px-4 rounded-pill text-muted">Назад</a>
+                        </div>
+                        
+                        <a href="{% url 'tasks_calendar:delete' task.id %}" class="btn btn-outline-danger px-4 rounded-pill">
+                            <i class="bi bi-trash me-2"></i>Удалить
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

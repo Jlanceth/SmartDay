@@ -2,14 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class Event(models.Model):
+class Tasks(models.Model):
 
-    EVENT_TYPES = [
-        ('meeting', 'Meeting'),
-        ('walk', 'Walk'),
-        ('sport', 'Sport'),
-        ('study', 'Study'),
-        ('other', 'Other'),
+    TASK_TYPES = [
+        ('meeting', 'Встреча'),
+        ('walk', 'Прогулка'),
+        ('sport', 'Спорт'),
+        ('study', 'Учеба'),
+        ('other', 'Другое'),
     ]
 
     SOURCE_TYPES = [
@@ -20,7 +20,7 @@ class Event(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='events'
+        related_name='tasks'
     )
 
     title = models.CharField(
@@ -40,9 +40,9 @@ class Event(models.Model):
         default=False
     )
 
-    event_type = models.CharField(
+    task_type = models.CharField(
         max_length=50,
-        choices=EVENT_TYPES,
+        choices=TASK_TYPES,
         default='other'
     )
 
