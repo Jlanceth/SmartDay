@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card shadow-sm border-0 rounded-4 p-4">
+        <h2 class="fw-bold mb-4">Прогноз погоды: {{ city }}</h2>
+
+        {% if error %}
+            <div class="alert alert-warning">Не удалось загрузить прогноз погоды.</div>
+        {% else %}
+            <div class="d-flex gap-3 overflow-x-auto pb-3" style="scroll-behavior: smooth;">
+                {% for item in forecast %}
+                    <div class="card border-0 bg-light text-center p-3 rounded-4" style="min-width: 130px;">
+                        <div class="fw-bold text-muted">{{ item.datetime|slice:"11:16" }}</div>
+                        <img src="https://openweathermap.org/img/wn/{{ item.icon }}@2x.png" class="mx-auto" alt="weather" style="width: 60px;">
+                        <div class="fs-4 fw-bold text-dark">{{ item.temp }}°C</div>
+                        <div class="small text-muted text-truncate px-1" title="{{ item.condition }}">{{ item.condition }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

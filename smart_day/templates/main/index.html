@@ -86,11 +86,18 @@
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0 rounded-4 p-4 mb-4 bg-white custom-main-border">
-                <h6 class="text-muted small text-uppercase fw-bold">Рекомендация дня</h6>
-                <div class="d-flex mt-2">
-                    <i class="bi bi-lightbulb text-warning me-3 h4"></i>
-                    <p class="small mb-0">Не забудьте выпить достаточно воды из-за высокой активности.</p>
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background-color: #fff;">
+                <div class="card-body p-0">
+                    <h5 class="card-title fw-bold text-primary mb-3 d-flex align-items-center gap-2">
+                        <i class="bi bi-brightness-high text-warning"></i> Рекомендация дня
+                    </h5>
+                    
+                    <div class="d-flex align-items-start gap-3 p-3 rounded-3 bg-light border-start border-primary border-4">
+                        <i class="bi bi-lightbulb text-warning fs-4 mt-1 flex-shrink-0"></i>
+                        <p class="card-text text-secondary mb-0 lh-base fw-medium">
+                            {{ smart_recommendation }}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

@@ -4,69 +4,148 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Мой календарь</h2>
-        <a href="{% url 'tasks_calendar:create' %}" class="btn btn-primary rounded-pill px-4">
-            <i class="bi bi-plus-lg me-2"></i>Добавить задачу
-        </a>
+        <div class="d-flex gap-2">
+            {% if tasks %}
+                <button type="button" id="edit-mode-btn" class="btn btn-outline-secondary rounded-pill px-4">
+                    <i class="bi bi-check2-square me-2"></i>Выбрать задачи
+                </button>
+            {% endif %}
+            <a href="{% url 'tasks_calendar:create' %}" class="btn btn-primary rounded-pill px-4">
+                <i class="bi bi-plus-lg me-2"></i>Добавить задачу
+            </a>
+        </div>
     </div>
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-header bg-white py-3">
-                    <h5 class="mb-0">Задачи на сегодня</h5>
-                </div>
-                <div class="card-body">
-                    {% if tasks %}
-                        {% for task in tasks %}
-                            <div class="d-flex align-items-start border-bottom pb-3 mb-3">
-                                <div class="bg-primary text-white rounded-3 p-2 text-center me-3" style="min-width: 60px;">
-                                    <div class="small opacity-75">{{ task.start_time|date:"H:i" }}</div>
-                                    <div class="fw-bold text-uppercase">{{ task.start_time|date:"D" }}</div>
-                                </div>
-
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1 fw-bold">
-                                        <a href="{% url 'tasks_calendar:detail' task.id %}" class="text-decoration-none text-dark">
-                                            {{ task.title }}
-                                        </a>
-                                    </h6>
-                                    <p class="text-muted small mb-0">{{ task.description|truncatechars:50 }}</p>
-                                </div>
-
-                                <div class="d-flex align-items-center gap-2">
-                                    <a href="{% url 'tasks_calendar:edit' task.id %}" class="btn btn-sm btn-outline-primary border-0">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="{% url 'tasks_calendar:delete' task.id %}" class="btn btn-sm btn-outline-danger border-0">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                    <div class="form-check ms-2">
-                                        <input class="form-check-input" type="checkbox" style="transform: scale(1.2);">
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="text-center py-4 text-muted">
-                            <i class="bi bi-clipboard-x display-4"></i>
-                            <p class="mt-2">Задач пока нет. Самое время что-нибудь запланировать!</p>
+            <form id="bulk-delete-form" action="{% url 'tasks_calendar:bulk_delete' %}" method="post">
+                {% csrf_token %}
+                
+                <div id="bulk-actions-panel" class="card shadow-sm border-0 rounded-4 mb-3 d-none bg-light-subtle">
+                    <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                        <span class="text-muted small">
+                            Выбрано задач: <strong id="selected-count">0</strong>
+                        </span>
+                        <div class="d-flex gap-2">
+                            <button type="button" id="cancel-selection-btn" class="btn btn-sm btn-light rounded-pill px-3">Отмена</button>
+                            <button type="submit" id="delete-selected-btn" class="btn btn-sm btn-danger rounded-pill px-3" disabled>
+                                <i class="bi bi-trash me-1"></i>Удалить выбранные
+                            </button>
                         </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 bg-light">
-                <div class="card-body p-4">
-                    <h5 class="text-primary"><i class="bi bi-magic me-2"></i>Smart Recommendation</h5>
-                    <p class="small text-muted">На основе погоды и твоего самочувствия:</p>
-                    <div class="p-3 bg-white rounded-3 border-start border-primary border-4">
-                        "Сегодня высокая солнечная активность. Если пойдешь гулять, возьми очки и планируй дела в тени."
                     </div>
                 </div>
-            </div>
+
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Задачи на сегодня</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if tasks %}
+                            {% for task in tasks %}
+                                <div class="d-flex align-items-start border-bottom pb-3 mb-3 task-item">
+                                    <div class="bg-primary text-white rounded-3 p-2 text-center me-3" style="min-width: 60px;">
+                                        <div class="small opacity-75">{{ task.start_time|date:"H:i" }}</div>
+                                        <div class="fw-bold text-uppercase">{{ task.start_time|date:"D" }}</div>
+                                    </div>
+
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1 fw-bold">
+                                            <a href="{% url 'tasks_calendar:detail' task.id %}" class="text-decoration-none text-dark">
+                                                {{ task.title }}
+                                            </a>
+                                        </h6>
+                                        <p class="text-muted small mb-0">{{ task.description|truncatechars:50 }}</p>
+                                    </div>
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        {% if not task.is_external %}
+                                            <div class="single-actions d-flex gap-2">
+                                                <a href="{% url 'tasks_calendar:edit' task.id %}" class="btn btn-sm btn-outline-primary border-0">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'tasks_calendar:delete' task.id %}" class="btn btn-sm btn-outline-danger border-0">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                            
+                                            <div class="form-check ms-2 bulk-checkbox-wrapper" style="display: none;">
+                                                <input class="form-check-input task-checkbox" type="checkbox" name="task_ids" value="{{ task.id }}" style="transform: scale(1.2);">
+                                            </div>
+                                        {% else %}
+                                            <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-1 small">
+                                                <i class="bi bi-cloud-arrow-down me-1"></i> Из внешнего API
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-4 text-muted">
+                                <i class="bi bi-clipboard-x display-4"></i>
+                                <p class="mt-2">Задач пока нет. Самое время что-нибудь запланировать!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
         </div>
+
+        
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editModeBtn = document.getElementById('edit-mode-btn');
+    const cancelSelectionBtn = document.getElementById('cancel-selection-btn');
+    const bulkActionsPanel = document.getElementById('bulk-actions-panel');
+    const singleActions = document.querySelectorAll('.single-actions');
+    const bulkCheckboxWrappers = document.querySelectorAll('.bulk-checkbox-wrapper');
+    const checkboxes = document.querySelectorAll('.task-checkbox');
+    const deleteSelectedBtn = document.getElementById('delete-selected-btn');
+    const selectedCount = document.getElementById('selected-count');
+
+    function toggleEditMode(isBatchMode) {
+        if (isBatchMode) {
+            // Переходим в режим выбора
+            editModeBtn.classList.add('d-none');
+            bulkActionsPanel.classList.remove('d-none');
+            singleActions.forEach(el => el.classList.add('d-none'));
+            bulkCheckboxWrappers.forEach(el => el.style.display = 'block');
+        } else {
+            // Возвращаемся в обычный режим
+            editModeBtn.classList.remove('d-none');
+            bulkActionsPanel.classList.add('d-none');
+            singleActions.forEach(el => el.classList.remove('d-none'));
+            bulkCheckboxWrappers.forEach(el => el.style.display = 'none');
+            
+            // Сбрасываем все чеки
+            checkboxes.forEach(cb => cb.checked = false);
+            updateSelectionCount();
+        }
+    }
+
+    function updateSelectionCount() {
+        const checkedCount = document.querySelectorAll('.task-checkbox:checked').length;
+        selectedCount.textContent = checkedCount;
+        
+        if (checkedCount > 0) {
+            deleteSelectedBtn.removeAttribute('disabled');
+        } else {
+            deleteSelectedBtn.setAttribute('disabled', 'true');
+        }
+    }
+
+    if (editModeBtn) {
+        editModeBtn.addEventListener('click', () => toggleEditMode(true));
+    }
+    if (cancelSelectionBtn) {
+        cancelSelectionBtn.addEventListener('click', () => toggleEditMode(false));
+    }
+
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', updateSelectionCount);
+    });
+});
+</script>
 {% endblock %}
