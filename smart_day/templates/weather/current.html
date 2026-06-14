@@ -18,29 +18,30 @@
                 <img src="https://openweathermap.org/img/wn/{{ icon }}@4x.png" alt="{{ condition }}" style="width: 150px; height: 150px;">
             </div>
 
-            <div class="row g-3 text-center border-top pt-4">
+            <div class="row g-3 text-center border-top pt-4 mb-3">
                 <div class="col-4">
-                    <div class="p-2 bg-light rounded-3">
+                    <div class="p-2 bg-light rounded-3 h-100">
                         <i class="bi bi-wind text-info fs-3"></i>
                         <div class="small text-muted mt-1">Ветер</div>
                         <div class="fw-bold">{{ wind_speed }} м/с</div>
                     </div>
                 </div>
                 <div class="col-4">
-                    <div class="p-2 bg-light rounded-3">
+                    <div class="p-2 bg-light rounded-3 h-100">
                         <i class="bi bi-droplet-half text-primary fs-3"></i>
                         <div class="small text-muted mt-1">Влажность</div>
                         <div class="fw-bold">{{ humidity }}%</div>
                     </div>
                 </div>
                 <div class="col-4">
-                    <div class="p-2 bg-light rounded-3">
-                        <i class="bi bi-speedometer text-secondary fs-3"></i>
-                        <div class="small text-muted mt-1">Давление</div>
-                        <div class="fw-bold">{{ pressure }} мм</div>
-                    </div>
+                        <div>
+                            <i class="bi bi-activity text-danger fs-3"></i>
+                            <div class="small text-dark mt-1 fw-medium">Kp-индекс</div>
+                            <div class="fw-bold fs-5 my-1">{{ kp_index }}</div>
+                        </div>
                 </div>
             </div>
+
         {% endif %}
     </div>
 </div>

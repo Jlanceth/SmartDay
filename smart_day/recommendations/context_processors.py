@@ -20,7 +20,7 @@ def global_smart_recommendation(request):
     # 2. Получаем данные из API
     real_weather = get_weather_data()
     geo_storm = get_geomagnetic_data()
-    pollen = get_pollen_data()
+    pollen = get_pollen_data(real_weather)
     
     # 3. Генерируем рекомендацию
     smart_rec = generate_smart_recommendation(request.user, tasks_list, real_weather, geo_storm, pollen)

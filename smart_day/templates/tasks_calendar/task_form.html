@@ -41,6 +41,14 @@
                                 {% bootstrap_field form.end_time %}
                             </div>
                         </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6 d-flex align-items-center">
+                            {% bootstrap_field form.need_remind %}
+                        </div>
+                        <div class="col-md-6" id="reminder-days-wrapper" style="display: none; transition: all 0.3s ease;">
+                            {% bootstrap_field form.remind_days_before %}
+                        </div>
+                    </div>
 
                     <div class="d-flex justify-content-between align-items-center mt-4">
                         <a href="{% url 'tasks_calendar:list' %}" class="btn btn-outline-secondary px-4">
@@ -63,3 +71,28 @@
     </div>
 </div>
 {% endblock %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Находим чекбокс и обертку поля с днями
+        // django_bootstrap5 обычно генерирует ID по схеме id_имяполя
+        const needRemindCheckbox = document.getElementById('id_need_remind');
+        const daysWrapper = document.getElementById('reminder-days-wrapper');
+
+        if (needRemindCheckbox && daysWrapper) {
+            function toggleDaysField() {
+                if (needRemindCheckbox.checked) {
+                    daysWrapper.style.display = 'block';
+                } else {
+                    daysWrapper.style.display = 'none';
+                }
+            }
+
+            // Проверяем состояние при загрузке (для режима редактирования задачи)
+            toggleDaysField();
+
+            // Вешаем обработчик события на изменение состояния чекбокса
+            needRemindCheckbox.addEventListener('change', toggleDaysField);
+        }
+    });
+</script>

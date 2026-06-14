@@ -16,15 +16,20 @@
             min-height: 100vh;
             display: flex;
             background-color: #f8f9fa;
+            margin: 0;
         }
+
         #sidebar {
             width: 250px;
-            min-height: 100vh;
+            height: 100vh;
             background-color: #fff;
             border-right: 1px solid #e0e0e0;
             position: fixed;
+            top: 0;
+            left: 0;
             display: flex;
             flex-direction: column;
+            z-index: 1000;
         }
         .nav-link {
             color: #6c757d;
@@ -43,9 +48,21 @@
             margin-right: 12px;
             font-size: 1.2rem;
         }
+
         .main-content {
-            margin-left: 250px; /* Отступ на ширину сайдбара */
-            width: 100%;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-wrapper {
+            flex: 1 0 auto;
+            padding: 2rem;
+        }
+        footer {
+            flex-shrink: 0;
         }
         .logo-area {
             padding: 25px 20px;
@@ -57,17 +74,20 @@
         }
         .logo-area i { margin-right: 10px; }
         
-        /* Стили для мобильной версии, если нужно */
+        .hover-primary:hover {
+            color: #0d6efd !important;
+            transition: color 0.15s ease-in-out;
+        }
+
         @media (max-width: 768px) {
             #sidebar { width: 70px; }
             #sidebar span, .logo-area span { display: none; }
-            .main-content { margin-left: 70px; }
+            .main-content { margin-left: 70px; width: calc(100% - 70px); }
         }
     </style>
 </head>
 <body>
-
-    <div id="sidebar shadow-sm">
+    <div id="sidebar" class="shadow-sm">
         <a href="{% url 'recommendations:index' %}" class="text-decoration-none d-block mb-4">
             <div class="logo-area">
                 <i class="bi bi-calendar-check-fill"></i>
@@ -99,7 +119,7 @@
             {% if request.user.is_authenticated %}
                 <form action="{% url 'users:logout' %}" method="post" class="px-3">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-light w-100 text-start text-danger nav-link border-0">
+                    <button type="submit" class="btn btn-light w-100 text-start text-danger nav-link border-0 m-0 px-3">
                         <i class="bi bi-box-arrow-left"></i> <span>Выход</span>
                     </button>
                 </form>
@@ -111,56 +131,67 @@
         </div>
     </div>
 
-    <main class="main-content">
-    <header class="bg-white border-bottom p-3 d-flex justify-content-end align-items-center shadow-sm">
+    <div class="main-content">
+        
+        <header class="bg-white border-bottom p-3 d-flex justify-content-end align-items-center shadow-sm">
+            <button type="button" id="notification-bell" class="btn btn-link text-secondary p-0 position-relative shadow-none me-4" 
+                    data-recommendation="{{ smart_recommendation|escapejs }}">
+                <i class="bi bi-bell fs-4"></i>
+                <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+            </button>
 
-        <button type="button" id="notification-bell" class="btn btn-link text-secondary p-0 position-relative shadow-none me-4" 
-                data-recommendation="{{ smart_recommendation|escapejs }}">
-            <i class="bi bi-bell fs-4"></i>
-            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
-        </button>
-
-        <a href="{% url 'users:profile' %}" class="d-flex align-items-center text-decoration-none">
-            <span class="me-2 fw-bold small text-dark">
-                {{ request.user.get_full_name|default:request.user.username }}
-            </span>
-            
-            {% if request.user.profile.avatar %}
-                <img src="{{ request.user.profile.avatar.url }}" 
-                    class="rounded-circle shadow-sm" 
-                    style="width: 35px; height: 35px; object-fit: cover; transition: transform 0.2s;"
-                    onmouseover="this.style.transform='scale(1.1)'" 
-                    onmouseout="this.style.transform='scale(1)'">
-            {% else %}
-                <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center shadow-sm" 
-                    style="width: 35px; height: 35px; transition: transform 0.2s;"
-                    onmouseover="this.style.transform='scale(1.1)'" 
-                    onmouseout="this.style.transform='scale(1)'">
-                    {{ request.user.username|slice:":1"|upper }}
-                </div>
-            {% endif %}
-        </a>
-    </header>
-
-        <main>
-            {% block content %}{% endblock %}
-        </main>
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050; margin-top: 70px;">
-            <div id="recommendation-toast" class="toast align-items-center text-white bg-dark border-0 rounded-3 shadow" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-                <div class="d-flex">
-                    <div class="toast-body d-flex align-items-start gap-2 py-3">
-                        <i class="bi bi-lightbulb-fill text-warning fs-5 mt-1 flex-shrink-0"></i>
-                        <div>
-                            <strong class="d-block mb-1 text-warning">Рекомендация системы</strong>
-                            <span id="toast-text-content" style="font-size: 0.9rem; line-height: 1.4;"></span>
-                        </div>
+            <a href="{% url 'users:profile' %}" class="d-flex align-items-center text-decoration-none">
+                <span class="me-2 fw-bold small text-dark">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </span>
+                
+                {% if request.user.profile.avatar %}
+                    <img src="{{ request.user.profile.avatar.url }}" class="rounded-circle shadow-sm" style="width: 35px; height: 35px; object-fit: cover;">
+                {% else %}
+                    <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center shadow-sm" style="width: 35px; height: 35px;">
+                        {{ request.user.username|slice:":1"|upper }}
                     </div>
-                    <button type="button" class="btn-close btn-close-white m-auto me-2" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            </div>
+                {% endif %}
+            </a>
+        </header>
+
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
         </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <footer class="bg-white border-top p-4 rounded-top-4 shadow-sm mt-auto">
+            <div class="container-fluid">
+                <div class="row align-items-center justify-content-between gap-3">
+                    <div class="col-12 col-md-auto text-center text-md-start">
+                        <span class="fw-bold text-primary mb-0">SmartDay</span>
+                        <span class="text-muted small ms-2">&copy; 2026 Адаптивная система планирования</span>
+                    </div>
+
+                <div class="col-12 col-md-auto d-flex justify-content-center gap-4">
+                    <a href="{% url 'weather:about' %}" class="text-decoration-none text-secondary small fw-medium hover-primary">О нас</a>
+                    <a href="{% url 'weather:contacts' %}" class="text-decoration-none text-secondary small fw-medium hover-primary">Контакты</a>
+                    <a href="{% url 'weather:privacy' %}" class="text-decoration-none text-secondary small fw-medium hover-primary">Политика конфиденциальности</a>
+                </div>
+
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050; margin-top: 70px;">
+        <div id="recommendation-toast" class="toast align-items-center text-white bg-dark border-0 rounded-3 shadow" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-start gap-2 py-3">
+                    <i class="bi bi-lightbulb-fill text-warning fs-5 mt-1 flex-shrink-0"></i>
+                    <div>
+                        <strong class="d-block mb-1 text-warning">Рекомендация системы</strong>
+                        <span id="toast-text-content" style="font-size: 0.9rem; line-height: 1.4;"></span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white m-auto me-2" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -169,13 +200,10 @@
             const toastText = document.getElementById('toast-text-content');
             
             if (bellBtn && toastEl && toastText) {
-                // Инициализируем компонент Toast из Bootstrap 5
                 const bsToast = new bootstrap.Toast(toastEl);
                 
                 bellBtn.addEventListener('click', function (e) {
                     e.preventDefault();
-                    
-                    // Вытаскиваем строку рекомендации из HTML атрибута
                     const recText = bellBtn.getAttribute('data-recommendation');
                     
                     if (recText && recText.trim() !== "") {
@@ -183,13 +211,10 @@
                     } else {
                         toastText.textContent = "На сегодня рекомендации не сформированы. Хорошего дня!";
                     }
-                    
-                    // Заставляем окно плавно вылететь
                     bsToast.show();
                 });
             }
         });
     </script>
-    {% block extra_js %}{% endblock %}
 </body>
 </html>

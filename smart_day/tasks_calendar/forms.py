@@ -6,7 +6,8 @@ class TaskForm(forms.ModelForm):
         model = Tasks
         fields = [
             'title', 'description', 'location', 
-            'task_type', 'is_outdoor', 'start_time', 'end_time'
+            'task_type', 'is_outdoor', 'start_time', 'end_time',
+            'need_remind', 'remind_days_before'
         ]
         labels = {
             'title': 'Название задачи',
@@ -34,3 +35,7 @@ class TaskForm(forms.ModelForm):
             super().__init__(*args, **kwargs)
             self.fields['start_time'].input_formats = ['%Y-%m-%dT%H:%M']
             self.fields['end_time'].input_formats = ['%Y-%m-%dT%H:%M']
+
+
+
+            

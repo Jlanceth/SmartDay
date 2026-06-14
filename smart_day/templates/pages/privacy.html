@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4 border-0" style="max-height: 70vh; overflow-y: auto;">
+                <h1 class="h3 mb-4 text-primary fw-bold">Политика конфиденциальности</h1>
+                <p class="text-muted small">Последнее обновление: Июнь 2026 г.</p>
+                
+                <h5 class="h6 text-dark fw-bold mt-4">1. Общие положения</h5>
+                <p class="text-secondary small">Настоящая политика конфиденциальности определяет порядок обработки и защиты персональных данных пользователей интеллектуального веб-приложения планирования дня.</p>
+                
+                <h5 class="h6 text-dark fw-bold mt-4">2. Какие данные мы собираем</h5>
+                <p class="text-secondary small">Для функционирования рекомендательной системы приложение локально сохраняет в СУБД PostgreSQL следующие параметры: учетные данные (логин, email, хэшированный пароль), расписание ваших задач, а также выбранные вами маркеры здоровья (метеочувствительность, склонность к аллергиям).</p>
+                
+                <h5 class="h6 text-dark fw-bold mt-4">3. Цели обработки данных</h5>
+                <p class="text-secondary small">Персональные медицинские триггеры используются исключительно бэкенд-алгоритмом Django для фильтрации внешних REST API-ответов (OpenWeatherMap, NOAA, Open-Meteo) и генерации адаптивных предупреждений на вашей главной странице. Данные не передаются третьим лицам.</p>
+                
+                <h5 class="h6 text-dark fw-bold mt-4">4. Безопасность</h5>
+                <p class="text-secondary small">Пароли пользователей защищены сквозным односторонним хэшированием PBKDF2 с SHA-256 встроенными средствами безопасности Django, что исключает их компрометацию в сыром виде.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
